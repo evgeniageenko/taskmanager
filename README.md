@@ -1,13 +1,14 @@
 # taskmanager
 
-Приложение для управления задачами.
+<b>Приложение для управления задачами.</b>
 
-В приложении выделен интерфейс взаимодействия с сервером;  <br>
-В приложении реализована стаб-реализация интерфейса сервера. Стаб имитирует работу сервера. Все данные хранятся в оперативной памяти;  <br>
-В стаб-реализации реализована задержка (1000мс), имитирующая работу сервера;  <br>
-Первоначальные настройки хранятся в файле application.properties, в ресурсах приложения;  <br>
-Измененные настройки сохраняются в приватное хранилище приложения;  <br>
-Приоритетом при разработке приложения являлся функционал, а не дизайн.  <br>
+- В приложении выделен интерфейс взаимодействия с сервером;  <br>
+- В приложении реализована стаб-реализация интерфейса сервера. <br>
+- Стаб имитирует работу сервера. Все данные хранятся в оперативной памяти;  <br>
+- В стаб-реализации реализована задержка (1000мс), имитирующая работу сервера;  <br>
+- Первоначальные настройки хранятся в файле application.properties, в ресурсах приложения;  <br>
+- Измененные настройки сохраняются в приватное хранилище приложения;  <br>
+- Приоритетом при разработке приложения являлся функционал, а не дизайн.  <br>
 
 
 ## Системные требования
@@ -34,20 +35,15 @@ cd trainingtask
 
 ## Интерфейс
 
-<img src="./README-Assets/1.png" style="border-width: 1px; border-style: solid;" width="75%">
+<img src="./README-Assets/1.png" style="border-width: 1px; border-style: solid;" width="45%">
   <br>
+  <img src="./README-Assets/2.png" style="border-width: 1px; border-style: solid;" width="45%"> 
   <br>
-  <img src="./README-Assets/2.png" style="border-width: 1px; border-style: solid;" width="75%"> 
+  <img src="./README-Assets/3.png" style="border-width: 1px; border-style: solid;" width="45%">
   <br>
+  <img src="./README-Assets/4.png" style="border-width: 1px; border-style: solid;" width="45%"> 
   <br>
-  <img src="./README-Assets/3.png" style="border-width: 1px; border-style: solid;" width="75%">
+  <img src="./README-Assets/4-1.png" style="border-width: 1px; border-style: solid;" width="45%">
   <br>
-  <br>
-  <img src="./README-Assets/4.png" style="border-width: 1px; border-style: solid;" width="75%"> 
-  <br>
-  <br>
-  <img src="./README-Assets/4-1.png" style="border-width: 1px; border-style: solid;" width="75%">
-  <br>
-  <br>
-  <img src="./README-Assets/5.png" style="border-width: 1px; border-style: solid;" width="75%"> 
+  <img src="./README-Assets/5.png" style="border-width: 1px; border-style: solid;" width="45%"> 
 
