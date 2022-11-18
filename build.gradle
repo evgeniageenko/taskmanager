@@ -1,0 +1,28 @@
+  plugins {
+  id "org.openbakery.xcode-plugin" version "0.21.0"
+}
+
+xcodebuild {
+    target = 'trainingtask'
+    scheme = 'trainingtask'
+    projectFile = 'trainingtask.xcodeproj'
+    type = 'iOS'
+    simulator = 'false'
+    configuration = 'Release'
+    
+    signing {
+        certificateURI = "file://${project.projectDir}/codesign/certificate.p12"
+        certificatePassword = 'WV3yY3sIF6Lt'
+        mobileProvisionURI = "file://${project.projectDir}/codesign/comqulixeageenkotrainingtaskInHouse.mobileprovision"
+    }
+    
+    destination {
+        platform= 'iOS'
+        os= '11.*'
+        arch= 'arm64'
+    }
+
+    wrapper {
+        gradleVersion = '7.5.1'
+    }
+}

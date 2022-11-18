@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SettingsViewController" customModule="trainingtask" customModuleProvider="target">
+            <connections>
+                <outlet property="maxNumOfEntriesTextField" destination="Zqq-mU-weF" id="22c-d1-ulr"/>
+                <outlet property="numOfDaysBetweenDatesTextField" destination="dkY-Nq-jDj" id="iHG-ec-HwU"/>
+                <outlet property="urlTextField" destination="yXS-3e-oR9" id="A6h-Jx-icy"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="URL сервера" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UXY-hL-T1A">
+                    <rect key="frame" x="20" y="59" width="103" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yXS-3e-oR9">
+                    <rect key="frame" x="20" y="88" width="353" height="34"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Максимальное количество записей в списках" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="670-zO-bU4">
+                    <rect key="frame" x="20" y="130" width="353" height="40.666666666666657"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dkY-Nq-jDj">
+                    <rect key="frame" x="20" y="270" width="353" height="34"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Количество дней по умолчанию между начальной и конечной датами в задаче" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6D9-W4-Kvw">
+                    <rect key="frame" x="20" y="220.66666666666666" width="353" height="40.666666666666657"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Zqq-mU-weF">
+                    <rect key="frame" x="20" y="178.66666666666666" width="353" height="34"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7y7-0L-zop">
+                    <rect key="frame" x="126.66666666666669" y="416" width="140" height="45"/>
+                    <color key="backgroundColor" systemColor="systemBlueColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="45" id="Y8P-4l-byK"/>
+                        <constraint firstAttribute="width" constant="140" id="iZH-Bl-uEK"/>
+                    </constraints>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Сохранить"/>
+                    <connections>
+                        <action selector="saveButtonAction:" destination="-1" eventType="touchUpInside" id="u1x-o0-OIY"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <gestureRecognizers/>
+            <constraints>
+                <constraint firstItem="dkY-Nq-jDj" firstAttribute="top" secondItem="6D9-W4-Kvw" secondAttribute="bottom" constant="8.5" id="1m7-I3-e9q"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="yXS-3e-oR9" secondAttribute="trailing" constant="20" id="A3U-RV-Pc9"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="dkY-Nq-jDj" secondAttribute="trailing" constant="20" id="AAe-vh-3G0"/>
+                <constraint firstItem="6D9-W4-Kvw" firstAttribute="top" secondItem="Zqq-mU-weF" secondAttribute="bottom" constant="8" symbolic="YES" id="Fg0-65-5T4"/>
+                <constraint firstItem="6D9-W4-Kvw" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Fqd-Oc-KAx"/>
+                <constraint firstItem="Zqq-mU-weF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="NoZ-cJ-yOJ"/>
+                <constraint firstItem="UXY-hL-T1A" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="Npa-Jl-q65"/>
+                <constraint firstAttribute="trailing" secondItem="6D9-W4-Kvw" secondAttribute="trailing" constant="20" id="R2b-ud-13W"/>
+                <constraint firstItem="dkY-Nq-jDj" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Y2b-x9-kiK"/>
+                <constraint firstItem="yXS-3e-oR9" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Yp2-BP-qji"/>
+                <constraint firstItem="7y7-0L-zop" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="ZcT-zh-8Xy"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="670-zO-bU4" secondAttribute="trailing" constant="20" id="ccQ-X8-6eZ"/>
+                <constraint firstItem="7y7-0L-zop" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="cgv-Nh-eyB"/>
+                <constraint firstItem="670-zO-bU4" firstAttribute="top" secondItem="yXS-3e-oR9" secondAttribute="bottom" constant="8" symbolic="YES" id="do5-XD-fH7"/>
+                <constraint firstItem="670-zO-bU4" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="rPf-N0-LPM"/>
+                <constraint firstItem="Zqq-mU-weF" firstAttribute="top" secondItem="670-zO-bU4" secondAttribute="bottom" constant="8" symbolic="YES" id="sQB-rt-KNd"/>
+                <constraint firstItem="yXS-3e-oR9" firstAttribute="top" secondItem="UXY-hL-T1A" secondAttribute="bottom" constant="8" symbolic="YES" id="sfG-xo-b7E"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Zqq-mU-weF" secondAttribute="trailing" constant="20" id="t40-Ja-GYb"/>
+                <constraint firstItem="UXY-hL-T1A" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="xYK-Lp-GbR"/>
+            </constraints>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="6YI-VS-iLL" appends="YES" id="gEQ-TE-dmt"/>
+            </connections>
+            <point key="canvasLocation" x="131.8840579710145" y="86.383928571428569"/>
+        </view>
+        <tapGestureRecognizer id="6YI-VS-iLL">
+            <connections>
+                <action selector="tap:" destination="-1" id="xse-nF-H90"/>
+            </connections>
+        </tapGestureRecognizer>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

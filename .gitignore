@@ -1,0 +1,12 @@
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.pbxproj
+/build
+*.ipa
+.build/
+.DS_Store
+build
+.gradle
+.gitattributes
+*.bat
