@@ -20,7 +20,7 @@
 
 ## Инструкция по установке
 
-1. Копируем удаленный репозииторий
+1. Копируем удаленный репозиторий
 ```
 git clone https://github.com/evgeniageenko/taskmanager.git
 ```
