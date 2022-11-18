@@ -35,10 +35,12 @@ cd taskmanager
 
 ## Интерфейс
 
-<img src="./README-Assets/1.png" style="border-width: 1px; border-style: solid;" width="40%">
-  <img src="./README-Assets/2.png" style="border-width: 1px; border-style: solid;" width="40%"> 
-  <img src="./README-Assets/3.png" style="border-width: 1px; border-style: solid;" width="40%">
-  <img src="./README-Assets/4.png" style="border-width: 1px; border-style: solid;" width="40%"> 
-  <img src="./README-Assets/4-1.png" style="border-width: 1px; border-style: solid;" width="40%">
-  <img src="./README-Assets/5.png" style="border-width: 1px; border-style: solid;" width="40%"> 
+<div style="display:flex;flex-wrap: wrap;">
+    <img src="./README-Assets/1.png" style="border-width: 1px; border-style: solid;" width="40%">
+    <img src="./README-Assets/2.png" style="border-width: 1px; border-style: solid;" width="40%"> 
+    <img src="./README-Assets/3.png" style="border-width: 1px; border-style: solid;" width="40%">
+    <img src="./README-Assets/4.png" style="border-width: 1px; border-style: solid;" width="40%"> 
+    <img src="./README-Assets/4-1.png" style="border-width: 1px; border-style: solid;" width="40%">
+    <img src="./README-Assets/5.png" style="border-width: 1px; border-style: solid;" width="40%"> 
+</div>
 
