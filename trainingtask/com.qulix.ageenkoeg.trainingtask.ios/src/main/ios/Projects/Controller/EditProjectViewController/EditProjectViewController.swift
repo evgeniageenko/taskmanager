@@ -8,7 +8,7 @@ class EditProjectViewController: UIViewController {
     @IBOutlet private weak var nameTextField: UITextField!
     @IBOutlet private weak var descriptionTextField: UITextField!
     
-    private let project: Project?
+    private let mode: EditProjectMode
     
     /**
      Делегат интерфейса EditProjectViewControllerDelegate
@@ -19,10 +19,10 @@ class EditProjectViewController: UIViewController {
      Создает экран "Редактирование проекта"
      
      - parameters:
-        - project: Проект (если переход был произведен с помощью кнопки "Изменить")
+        - mode: Перечисление возможных действий на экране
      */
-    init(project: Project?) {
-        self.project = project
+    init(mode: EditProjectMode) {
+        self.mode = mode
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,7 +33,7 @@ class EditProjectViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTitle()
-        bind(project)
+        bind(by: mode)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,34 +48,48 @@ class EditProjectViewController: UIViewController {
         self.navigationController?.navigationBar.topItem?.title = topItemTitle
     }
     
-    private func bind(_ model: Project?) {
-        nameTextField.text = model?.name
-        descriptionTextField.text = model?.description
+    private func bind(by mode: EditProjectMode) {
+        switch mode {
+        case .create:
+            break
+        case .edit(let project):
+            nameTextField.text = project.name
+            descriptionTextField.text = project.description
+        }
     }
     
-    private func unbind() throws -> Project {
-        guard let name = nameTextField.text, !name.isEmpty else {
-            let error = "Введите наименование"
-            throw AppError(message: error)
+    private func unbind() throws -> EditProjectModel {
+        let validation = EditProjectValidation()
+        
+        let validationResult = validation.validateAndReturnResult(
+            name: nameTextField.text,
+            descripion: descriptionTextField.text
+        )
+        
+        switch validationResult {
+        case .success(let project):
+            nameTextField.text = nil
+            descriptionTextField.text = nil
+            return project
+        case .error(let error):
+            throw error
         }
-        
-        guard let description = descriptionTextField.text, !description.isEmpty else {
-            let error = "Введите описание"
-            throw AppError(message: error)
-        }
-        
-        nameTextField.text = nil
-        descriptionTextField.text = nil
-        
-        let project = Project(name: name, description: description, tasks: project?.tasks, id: project?.id)
-        
-        return project
     }
     
     @IBAction private func saveButtonAction(_ sender: Any) {
         do {
             let model = try unbind()
-            delegate?.saveProject(model: model, isOpenFromAddButton: project == nil)
+            switch mode {
+            case .create:
+                delegate?.createProject(model: model)
+            case .edit(let project):
+                let project = Project(
+                    name: model.name,
+                    description: model.description,
+                    id: project.id
+                )
+                delegate?.editAndSaveProject(model: project)
+            }
             self.navigationController?.popViewController(animated: true)
         } catch let error {
             showAlertWith(error.localizedDescription)

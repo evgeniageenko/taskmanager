@@ -21,15 +21,21 @@ class ProjectCell: UITableViewCell {
     }
     
     /**
-     Передать модель проекта в ячейку
+     Установить данные в ячейку таблицы
      
      - parameters:
-        - model: Модель проекта
+        - model: Модель проекта, которая будет установлена в ячейку таблицы "Список проектов"
      */
-    func setUpProjectWith(_ model: ProjectCellModel) {
+    func bind(model: ProjectCellModel) {
         nameLabel.text = model.name
         descriptionLabel.text = model.description
     }
+    
+    /**
+     Очистить данные в ячейке таблицы
+     */
+    func unbind() {
+        nameLabel.text = nil
+        descriptionLabel.text = nil
+    }
 }
-
-

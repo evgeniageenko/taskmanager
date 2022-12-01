@@ -6,11 +6,19 @@ import Foundation
 protocol EditTaskViewControllerDelegate: AnyObject {
     
     /**
-     Сохранить/изменить задачу
+     Изменить задачу
      
      - parameters:
-        - model: Задача, которую необходимо сохранить/изменить
-        - isOpenFromAddButton: Проверка - был ли произведен переход с помощью кнопки "Добавить"
+        - model: Задача, которую необходимо изменить
      */
-    func saveTask(model: Task, isOpenFromAddButton: Bool)
+    func editAndSaveTask(model: Task)
+    
+    /**
+     Создать задачу
+     
+     - parameters:
+        - model: Задача, которую необходимо создать
+     */
+    func createTask(model: EditTaskModel)
+
 }

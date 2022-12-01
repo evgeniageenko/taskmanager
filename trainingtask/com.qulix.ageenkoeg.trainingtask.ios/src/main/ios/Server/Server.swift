@@ -11,42 +11,38 @@ protocol Server {
      Получить проекты
      
      - parameters:
-        - limit: Устанавливает кол-во проектов, которое необходимо загрузить
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func getProjectsWith(limit: Int?, completion: @escaping ([Project]) -> Void, error: @escaping (Error) -> (Void))
+    func getProjects(completion: @escaping ([Project]) -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Получить задачи
      
      - parameters:
-        - limit: Устанавливает кол-во задач, которое необходимо загрузить
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func getTasksWith(limit: Int?, completion: @escaping ([Task]) -> Void, error: @escaping (Error) -> (Void))
+    func getTasks(completion: @escaping ([TaskDetailModel]) -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Получить сотрудников
      
      - parameters:
-        - limit: Устанавливает кол-во сотрудников, которое необходимо загрузить
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func getEmployeesWith(limit: Int?, completion: @escaping ([Employee]) -> Void, error: @escaping (Error) -> (Void))
+    func getEmployees(completion: @escaping ([Employee]) -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Получить задачи проекта
      
      - parameters:
         - id: Идентификатор проекта
-        - limit: Устанавливает кол-во задач, которое необходимо загрузить
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func getProjectTasksBy(id: UUID, limit: Int?, completion: @escaping ([Task]) -> Void, error: @escaping (Error) -> (Void))
+    func getProjectTasksBy(id: UUID, completion: @escaping ([TaskDetailModel]) -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Создать проект
@@ -56,7 +52,7 @@ protocol Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func createProject(_ project: Project, completion: @escaping (Project) -> Void, error: @escaping (Error) -> (Void))
+    func createProject(_ project: EditProjectModel, completion: @escaping (Project) -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Создать задачу
@@ -66,7 +62,7 @@ protocol Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func createTask(_ task: Task, completion: @escaping (Task) -> Void, error: @escaping (Error) -> (Void))
+    func createTask(_ task: EditTaskModel, completion: @escaping (Task) -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Создать сотрудника
@@ -76,40 +72,37 @@ protocol Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func createEmployee(_ employee: Employee, completion: @escaping (Employee) -> Void, error: @escaping (Error) -> (Void))
+    func createEmployee(_ employee: EditEmployeeModel, completion: @escaping (Employee) -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Редактировать проект
      
      - parameters:
-        - project: Проект, который необходимо отредактировать
-        - id: Идентификатор проекта, который необходимо отредактировать
+        - editedProject: Проект, который необходимо отредактировать
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func editProject(_ project: Project, id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void))
+    func editProject(_ editedProject: Project, completion: @escaping () -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Редактировать задачу
      
      - parameters:
-        - task: Задача, которую необходимо отредактировать
-        - id: Идентификатор задачи, которую необходимо отредактировать
+        - editedTask: Задача, которую необходимо отредактировать
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func editTask(_ task: Task, id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void))
+    func editTask(_ editedTask: Task, completion: @escaping () -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Редактировать сотрудника
      
      - parameters:
-        - employee: Сотрудник, которого необходимо отредактировать
-        - id: Идентификатор сотрудника, которого необходимо отредактировать
+        - editedEmployee: Сотрудник, которого необходимо отредактировать
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func editEmployee(_ employee: Employee, id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void))
+    func editEmployee(_ editedEmployee: Employee, completion: @escaping () -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Удалить задачу
@@ -119,7 +112,7 @@ protocol Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func deleteTaskWith(id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void))
+    func deleteTaskWith(id: UUID, completion: @escaping () -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Удалить проект
@@ -129,7 +122,7 @@ protocol Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func deleteProjectWith(id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void))
+    func deleteProjectWith(id: UUID, completion: @escaping () -> Void, error: @escaping (Error) -> (Void))
     
     /**
      Удалить сотрудника
@@ -139,6 +132,6 @@ protocol Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func deleteEmployeeWith(id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void))
+    func deleteEmployeeWith(id: UUID, completion: @escaping () -> Void, error: @escaping (Error) -> (Void))
     
 }

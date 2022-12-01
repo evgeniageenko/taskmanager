@@ -12,7 +12,7 @@ class ProjectsViewController: UIViewController, UITableViewDelegate, UITableView
     private var projects: [Project] = []
     private let refreshControl = UIRefreshControl()
     private let swipeManager = SwipeActionManager()
-    private let settings: SettingsServise
+    private let settingsService: SettingsServise
     private let server: Server
     
     /**
@@ -20,11 +20,11 @@ class ProjectsViewController: UIViewController, UITableViewDelegate, UITableView
      
      - parameters:
         - server: Реализация интерфейса сервера
-        - settings: Настройки приложения
+        - settingsService: Настройки приложения
      */
-    init(server: Server, settings: SettingsServise) {
+    init(server: Server, settingsService: SettingsServise) {
         self.server = server
-        self.settings = settings
+        self.settingsService = settingsService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,7 +38,6 @@ class ProjectsViewController: UIViewController, UITableViewDelegate, UITableView
         setUpAddButton()
         setUpTitle()
         getProjects()
-        activityIndicator.hidesWhenStopped = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,6 +73,22 @@ class ProjectsViewController: UIViewController, UITableViewDelegate, UITableView
         navigationItem.rightBarButtonItem = addButton
     }
     
+    private func getProjects() {
+        activityIndicator.startAnimating()
+        let limit = settingsService.getSettings().maxNumOfEntries
+        server.getProjects(completion: { [weak self] projects in
+            guard let self = self else {
+                return
+            }
+            
+            self.projects = Array(projects[0..<min(limit, projects.count)])
+            self.tableView.reloadData()
+            self.activityIndicator.stopAnimating()
+        }, error: { [weak self] error in
+            self?.resolveError(error)
+        })
+    }
+    
     private func showAlertWith(_ message: String) {
         let alertTitle = "Ошибка"
         let actionTitle = "Ок"
@@ -87,80 +102,72 @@ class ProjectsViewController: UIViewController, UITableViewDelegate, UITableView
         showAlertWith(error.localizedDescription)
     }
     
-    private func getProjects() {
-        activityIndicator.startAnimating()
-        let limit = settings.getLimit()
-        server.getProjectsWith(limit: limit, completion: { [weak self] projects in
-            guard let self = self else { return }
-            self.projects = projects
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.reloadData()
-            }
-            self.activityIndicator.stopAnimating()
-        }, error: { [weak self] error in
-            self?.resolveError(error)
-        })
-    }
-    
-    /**
-     Сохранить/изменить проект
-     
-     - parameters:
-        - model: Проект, который необходимо сохранить/изменить
-        - isOpenFromAddButton: Проверка - был ли произведен переход с помощью кнопки "Добавить"
-     */
-    func saveProject(model: Project, isOpenFromAddButton: Bool) {
-        if isOpenFromAddButton {
-            activityIndicator.startAnimating()
-            server.createProject(Project(name: model.name,
-                                         description: model.description,
-                                         tasks: model.tasks,
-                                         id: model.id)) { [weak self] project in
-                self?.getProjects()
-                self?.activityIndicator.stopAnimating()
-            } error: { [weak self] error in
-                self?.resolveError(error)
-            }
-        } else {
-            activityIndicator.startAnimating()
-            if let id = model.id {
-                server.editProject(model, id: id) { [weak self] success in
-                    self?.getProjects()
-                    self?.activityIndicator.stopAnimating()
-                    DispatchQueue.main.async { [weak self] in
-                        self?.tableView.reloadData()
-                    }
-                } error: { [weak self] error in
-                    self?.resolveError(error)
-                }
-            }
-        }
-    }
-    
     @objc private func refresh(_ sender: AnyObject) {
         tableView.reloadData()
         refreshControl.endRefreshing()
     }
     
     @objc private func addButtonAction(_ sender: Any) {
-        let controller = EditProjectViewController(project: nil)
+        let controller = EditProjectViewController(mode: .create)
         controller.delegate = self
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
+    /**
+     Изменить проект
+     
+     - parameters:
+        - model: Проект, который необходимо изменить
+     */
+    func editAndSaveProject(model: Project) {
+        activityIndicator.startAnimating()
+        server.editProject(model) { [weak self] in
+            self?.getProjects()
+            self?.activityIndicator.stopAnimating()
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+            }
+        } error: { [weak self] error in
+            self?.resolveError(error)
+        }
+    }
+    
+    /**
+     Создать проект
+     
+     - parameters:
+        - model: Проект, который необходимо создать
+     */
+    func createProject(model: EditProjectModel) {
+        activityIndicator.startAnimating()
+        server.createProject(model) { [weak self] project in
+            self?.getProjects()
+            self?.activityIndicator.stopAnimating()
+        } error: { [weak self] error in
+            self?.resolveError(error)
+        }
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let edit = swipeManager.edit(rowIndexPathAt: indexPath) { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
+            
             let project = self.projects[indexPath.row]
-            let controller = EditProjectViewController(project: project)
+            let controller = EditProjectViewController(mode: .edit(project: project))
             controller.delegate = self
             self.navigationController?.pushViewController(controller, animated: true)
             self.tableView.reloadData()
         }
         
         let delete = swipeManager.delete(rowIndexPathAt: indexPath) { [weak self] in
-            guard let self = self, let id = self.projects[indexPath.row].id else { return }
-            self.server.deleteProjectWith(id: id) { [weak self] success in
+            guard let self = self else {
+                return
+            }
+            
+            let id = self.projects[indexPath.row].id
+            self.server.deleteProjectWith(id: id) { [weak self] in
                 self?.getProjects()
             } error: { [weak self] error in
                 self?.resolveError(error)
@@ -177,21 +184,36 @@ class ProjectsViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier = ProjectCell().getIdentifier()
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! ProjectCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? ProjectCell else {
+            fatalError("У таблицы не зарегистрирована ячейка ProjectCell")
+        }
         let name = projects[indexPath.row].name
         let description = projects[indexPath.row].description
-        cell.setUpProjectWith(ProjectCellModel(name: name,
-                                               description: description))
+        cell.bind(model: ProjectCellModel(
+            name: name,
+            description: description)
+        )
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedProject = projects[indexPath.item]
-        let controller = TasksViewController(server: server,
-                                             settings: settings,
-                                             selectedProject: selectedProject)
+        let controller = TasksViewController(
+            server: server,
+            settingsService: settingsService,
+            selectedProject: selectedProject
+        )
         let title = "Назад"
         self.navigationItem.backBarButtonItem?.title = title
         self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        switch cell {
+        case let projectCell as ProjectCell:
+            projectCell.unbind()
+        default:
+            break
+        }
     }
 }

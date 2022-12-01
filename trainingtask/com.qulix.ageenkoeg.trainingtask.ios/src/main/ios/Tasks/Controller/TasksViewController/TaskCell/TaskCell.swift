@@ -22,12 +22,12 @@ class TaskCell: UITableViewCell {
     }
     
     /**
-     Передать модель задачи в ячейку
+     Установить данные в ячейку таблицы
      
      - parameters:
-        - model: Модель задачи
+        - model: Модель задачи, которая будет установлена в ячейку таблицы "Список задач"
      */
-    func setUpTaskWith(_ model: TaskCellModel) {
+    func bind(model: TaskCellModel) {
         nameLabel.text = model.name
         
         switch model.status {
@@ -39,12 +39,22 @@ class TaskCell: UITableViewCell {
             statusImage.image = UIImage(named: "done")
         case .postponed:
             statusImage.image = UIImage(named: "postponed")
-        } 
+        }
         
         if model.isOpenFromProjectVC {
             projectLabel.isHidden = true
         } else {
             projectLabel.text = model.projectName
         }
+    }
+    
+    /**
+     Очистить данные в ячейке таблицы
+     */
+    func unbind() {
+        nameLabel.text = nil
+        statusImage.image = nil
+        projectLabel.text = nil
+        projectLabel.isHidden = false
     }
 }

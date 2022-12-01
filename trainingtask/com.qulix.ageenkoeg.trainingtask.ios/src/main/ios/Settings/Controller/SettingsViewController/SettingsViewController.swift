@@ -8,16 +8,16 @@ class SettingsViewController: UIViewController, UITextFieldDelegate, UITextViewD
     @IBOutlet private weak var maxNumOfEntriesTextField: UITextField!
     @IBOutlet private weak var numOfDaysBetweenDatesTextField: UITextField!
     
-    private let settings: SettingsServise
+    private let settingsService: SettingsServise
     
     /**
      Создает экран "Настройки"
      
      - parameters:
-        - settings: Сервис по работе с настройками
+        - settingsService: Сервис по работе с настройками
      */
-    init(settings: SettingsServise) {
-        self.settings = settings
+    init(settingsService: SettingsServise) {
+        self.settingsService = settingsService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -28,10 +28,10 @@ class SettingsViewController: UIViewController, UITextFieldDelegate, UITextViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTitle()
-        bind(settings.getSettings())
+        bind(settingsService.getSettings())
         setTextFieldsDelegates()
     }
-    
+        
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setUpTitle()
@@ -51,42 +51,35 @@ class SettingsViewController: UIViewController, UITextFieldDelegate, UITextViewD
     }
     
     private func bind(_ model: Settings) {
-        urlTextField.text = model.url
-        maxNumOfEntriesTextField.text = model.maxNumOfEntries
-        numOfDaysBetweenDatesTextField.text = model.numOfDaysBetweenDates
+        urlTextField.text = model.url.absoluteString
+        maxNumOfEntriesTextField.text = String(model.maxNumOfEntries)
+        numOfDaysBetweenDatesTextField.text = String(model.numOfDaysBetweenDates)
     }
     
     private func unbind() throws -> Settings {
-        guard let url = urlTextField.text, (URL(string: url) != nil) else {
-            let error = "Некорректный формат URL"
-            throw AppError(message: error)
+       let validation = SettingsValidation()
+       
+        let validationResult = validation.validateAndReturnResult(
+            url: urlTextField.text,
+            maxNumOfEntries: maxNumOfEntriesTextField.text,
+            numOfDaysBetweenDates: numOfDaysBetweenDatesTextField.text
+        )
+        
+        switch validationResult {
+        case .success(let settings):
+            urlTextField.text = nil
+            maxNumOfEntriesTextField.text = nil
+            numOfDaysBetweenDatesTextField.text = nil
+            return settings
+        case .error(let error):
+            throw error
         }
-        
-        guard let maxNumOfEntries = maxNumOfEntriesTextField.text,
-              (Int(maxNumOfEntries) != nil) else {
-            let error = "Некорректный формат максимального количества записей"
-            throw AppError(message: error)
-        }
-        
-        guard let numOfDaysBetweenDates = numOfDaysBetweenDatesTextField.text,
-              (Int(numOfDaysBetweenDates) != nil) else {
-            let error = "Некорректный формат количества дней по умолчанию"
-            throw AppError(message: error)
-        }
-        
-        urlTextField.text = nil
-        maxNumOfEntriesTextField.text = nil
-        numOfDaysBetweenDatesTextField.text = nil
-        
-        let settings = Settings(url: url, maxNumOfEntries: maxNumOfEntries, numOfDaysBetweenDates: numOfDaysBetweenDates)
-        
-        return settings
     }
     
     @IBAction private func saveButtonAction(_ sender: Any) {
         do {
             let model = try unbind()
-            settings.saveSettings(model)
+            settingsService.saveSettings(model)
             self.navigationController?.popViewController(animated: true)
         } catch let error {
             showAlertWith(error.localizedDescription)

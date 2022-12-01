@@ -1,14 +1,5 @@
-# taskmanager
+# trainingtask
 
-<b>Приложение для управления задачами</b>
-
-- В приложении выделен интерфейс взаимодействия с сервером;  <br>
-- В приложении реализована стаб-реализация интерфейса сервера. <br>
-- Стаб имитирует работу сервера. Все данные хранятся в оперативной памяти;  <br>
-- В стаб-реализации реализована задержка (1000мс), имитирующая работу сервера;  <br>
-- Первоначальные настройки хранятся в файле application.properties, в ресурсах приложения;  <br>
-- Измененные настройки сохраняются в приватное хранилище приложения;  <br>
-- Приоритетом при разработке приложения являлся функционал, а не дизайн.  <br>
 
 
 ## Системные требования
@@ -20,27 +11,16 @@
 
 ## Инструкция по установке
 
-1. Копируем удаленный репозиторий
+
+1. Копируем удаленный репозииторий
 ```
-git clone https://github.com/evgeniageenko/taskmanager.git
+git clone https://git.qulix.com/AgeenkoEG/trainingtask.git
 ```
 2. Заходим в папку проекта
 ```
-cd taskmanager
+cd trainingtask
 ```
 3. Делаем билд 
 ```
 ./gradlew build xcodebuild archive package
 ```
-
-## Интерфейс
-
-<div style="display:flex;flex-wrap: wrap;">
-    <img src="./README-Assets/1.png" style="border-width: 1px; border-style: solid;" width="40%">
-    <img src="./README-Assets/2.png" style="border-width: 1px; border-style: solid;" width="40%"> 
-    <img src="./README-Assets/3.png" style="border-width: 1px; border-style: solid;" width="40%">
-    <img src="./README-Assets/4.png" style="border-width: 1px; border-style: solid;" width="40%"> 
-    <img src="./README-Assets/4-1.png" style="border-width: 1px; border-style: solid;" width="40%">
-    <img src="./README-Assets/5.png" style="border-width: 1px; border-style: solid;" width="40%"> 
-</div>
-

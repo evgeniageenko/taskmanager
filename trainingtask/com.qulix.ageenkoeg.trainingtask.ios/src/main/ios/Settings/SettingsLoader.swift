@@ -26,30 +26,13 @@ class SettingsLoader {
         let plistDataObject = try PropertyListSerialization.propertyList(from: plistXML, format: &format)
         guard let plistData = plistDataObject as? [String: AnyObject],
               let url = plistData[url] as? String,
-              let maxNumOfEntries = plistData[maxNumOfEntries] as? String,
-              let numOfDayBetweenDates = plistData[numOfDaysBetweenDates] as? String else {
+              let urlValue = URL(string: url),
+              let maxNumOfEntries = plistData[maxNumOfEntries] as? NSNumber,
+              let numOfDayBetweenDates = plistData[numOfDaysBetweenDates] as? NSNumber else {
             let error = "Ошибка при загрузке настроек из plist"
             throw AppError(message: error)
         }
-        let settings = Settings(url: url, maxNumOfEntries: maxNumOfEntries, numOfDaysBetweenDates: numOfDayBetweenDates)
-        return settings
-    }
-    
-    /**
-     Загрузить настройки с UserDefaults
-     
-     - throws: Ошибка при загрузке
-     - returns: Настройки приложения
-     */
-    func loadFromUserDefaults() throws -> Settings {
-        let userDefaults = UserDefaults()
-        guard let url = userDefaults.value(forKey: url) as? String,
-              let maxNumOfEntries = userDefaults.value(forKey: maxNumOfEntries) as? String,
-              let numOfDaysBetweenDates = userDefaults.value(forKey: numOfDaysBetweenDates) as? String else {
-            let error = "Ошибка при загрузке настроек из UserDefaults"
-            throw AppError(message: error)
-        }
-        let settings = Settings(url: url, maxNumOfEntries: maxNumOfEntries, numOfDaysBetweenDates: numOfDaysBetweenDates)
+        let settings = Settings(url: urlValue, maxNumOfEntries: maxNumOfEntries.intValue, numOfDaysBetweenDates: numOfDayBetweenDates.intValue)
         return settings
     }
 }

@@ -23,15 +23,25 @@ class EmployeeCell: UITableViewCell {
     }
     
     /**
-     Передать модель сотрудника в ячейку
+     Установить данные в ячейку таблицы
      
      - parameters:
-        - model: Модель сотрудника
+        - model: Модель сотрудника, которая будет установлена в ячейку таблицы "Список сотрудников"
      */
-    func setUpEmployeeWith(_ model: EmployeeCellModel) {
+    func bind(model: EmployeeCellModel) {
         surNameLabel.text = model.surName
         nameLabel.text = model.name
         middleNameLabel.text = model.middleName
         positionLabel.text = model.position
+    }
+    
+    /**
+     Очистить данные в ячейке таблицы
+     */
+    func unbind() {
+        surNameLabel.text = nil
+        nameLabel.text = nil
+        middleNameLabel.text = nil
+        positionLabel.text = nil
     }
 }

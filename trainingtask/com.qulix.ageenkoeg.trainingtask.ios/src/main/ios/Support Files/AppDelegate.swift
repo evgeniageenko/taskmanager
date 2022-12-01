@@ -9,7 +9,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let server = Stub()
         let settings = SettingsServise()
-        let viewController = MenuViewController(settings: settings, server: server)
+        let viewController = MenuViewController(
+            settingsService: settings,
+            server: server
+        )
         
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = UINavigationController(rootViewController: viewController)

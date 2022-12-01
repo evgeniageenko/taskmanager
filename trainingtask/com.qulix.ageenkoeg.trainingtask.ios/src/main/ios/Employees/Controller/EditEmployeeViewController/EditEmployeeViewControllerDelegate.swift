@@ -6,11 +6,18 @@ import Foundation
 protocol EditEmployeeViewControllerDelegate: AnyObject {
     
     /**
-     Сохранить/изменить проект
+     Изменить проект
      
      - parameters:
-        - model: Сотрудник, которого необходимо сохранить/изменить
-        - isOpenFromAddButton: Проверка - был ли произведен переход с помощью кнопки "Добавить"
+        - model: Сотрудник, которого необходимо изменить
      */
-    func saveEmployee(model: Employee, isOpenFromAddButton: Bool)
+    func editAndSaveEmployee(model: Employee)
+    
+    /**
+     Создать проект
+     
+     - parameters:
+        - model: Сотрудник, которого необходимо создать
+     */
+    func createEmployee(model: EditEmployeeModel)
 }

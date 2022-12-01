@@ -24,60 +24,12 @@ class Stub: Server {
      Получить проекты
      
      - parameters:
-        - limit: Устанавливает кол-во проектов, которое необходимо загрузить
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func getProjectsWith(limit: Int?, completion: @escaping ([Project]) -> Void, error: @escaping (Error) -> (Void)) {
+    func getProjects(completion: @escaping ([Project]) -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            var projectsCount = self.projects.count
-            
-            let limit = limit ?? projectsCount
-            if limit < projectsCount {
-                projectsCount = limit
-            }
-            completion(Array(self.projects[...(projectsCount - 1)]))
-        })
-    }
-    
-    /**
-     Получить задачи
-     
-     - parameters:
-        - limit: Устанавливает кол-во задач, которое необходимо загрузить
-        - completion: Обработка ответа сервера
-        - error: Обработка ошибочной ситуации
-     */
-    func getTasksWith(limit: Int?, completion: @escaping ([Task]) -> Void, error: @escaping (Error) -> (Void)) {
-        delay(completion: {
-            var tasksCount = self.tasks.count
-            
-            let limit = limit ?? tasksCount
-            if limit < tasksCount {
-                tasksCount = limit
-            }
-            completion(Array(self.tasks[...(tasksCount - 1)]))
-        })
-        
-    }
-    
-    /**
-     Получить сотрудников
-     
-     - parameters:
-        - limit: Устанавливает кол-во сотрудников, которое необходимо загрузить
-        - completion: Обработка ответа сервера
-        - error: Обработка ошибочной ситуации
-     */
-    func getEmployeesWith(limit: Int?, completion: @escaping ([Employee]) -> Void, error: @escaping (Error) -> (Void)) {
-        delay(completion: {
-            var employeesCount = self.employees.count
-            
-            let limit = limit ?? employeesCount
-            if limit < employeesCount {
-                employeesCount = limit
-            }
-            completion(Array(self.employees[...(employeesCount - 1)]))
+            completion(self.projects)
         })
     }
     
@@ -86,27 +38,61 @@ class Stub: Server {
      
      - parameters:
         - id: Идентификатор проекта
-        - limit: Устанавливает кол-во задач, которое необходимо загрузить
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func getProjectTasksBy(id: UUID, limit: Int?, completion: @escaping ([Task]) -> Void, error: @escaping (Error) -> (Void)) {
+    func getProjectTasksBy(id: UUID, completion: @escaping ([TaskDetailModel]) -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            if self.projects.contains(where: {$0.id == id}) {
-                let tasks = self.tasks.filter({$0.projectId == id})
-                var tasksCount = tasks.count
-                
-                let limit = limit ?? tasksCount
-                if limit < tasksCount {
-                    tasksCount = limit
-                    completion(Array(tasks[...(tasksCount - 1)]))
-                } else {
-                    completion(tasks)
+            if let project = self.projects.first(where: { $0.id == id }) {
+                let filteredTasks = self.tasks.filter({ $0.projectId == id })
+                let result = filteredTasks.map { task in
+                    TaskDetailModel(
+                        task: task,
+                        project: project,
+                        employee: self.employees.first(where: { $0.id == task.employeeId })
+                    )
                 }
+                completion(result)
             } else {
-                let errorMessage = "Не удалость найти проект по id"
+                let errorMessage = "Не удалось найти проект по id"
                 error(AppError(message: errorMessage))
             }
+        })
+    }
+    
+    /**
+     Получить задачи
+     
+     - parameters:
+        - completion: Обработка ответа сервера
+        - error: Обработка ошибочной ситуации
+     */
+    func getTasks(completion: @escaping ([TaskDetailModel]) -> Void, error: @escaping (Error) -> (Void)) {
+        delay(completion: {
+            var result = [TaskDetailModel]()
+            for task in self.tasks {
+                if let project = self.projects.first(where: { $0.id == task.projectId }) {
+                    result.append(TaskDetailModel(
+                        task: task,
+                        project: project,
+                        employee: self.employees.first(where: { $0.id == task.employeeId })
+                    ))
+                }
+            }
+            completion(result)
+        })
+    }
+    
+    /**
+     Получить сотрудников
+     
+     - parameters:
+        - completion: Обработка ответа сервера
+        - error: Обработка ошибочной ситуации
+     */
+    func getEmployees(completion: @escaping ([Employee]) -> Void, error: @escaping (Error) -> (Void)) {
+        delay(completion: {
+            completion(self.employees)
         })
     }
     
@@ -118,21 +104,20 @@ class Stub: Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func createProject(_ project: Project, completion: @escaping (Project) -> Void, error: @escaping (Error) -> (Void)) {
+    func createProject(_ project: EditProjectModel, completion: @escaping (Project) -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
             let id = UUID()
-            if self.projects.contains(where: {$0.name == project.name}) == false {
-                if self.projects.contains(where: {$0.id == id}) == false {
-                    let project = Project(name: project.name, description: project.description, tasks: project.tasks, id: id)
-                    self.projects.append(project)
-                    completion(project)
-                } else {
-                    let errorMessage = "Проект с таким id уже существует"
-                    error(AppError(message: errorMessage))
-                }} else {
-                    let errorMessage = "Проект с таким названием уже существует"
-                    error(AppError(message: errorMessage))
-                }
+            if self.projects.contains(where: { $0.id == id }) == false {
+                let project = Project(
+                    name: project.name,
+                    description: project.description,
+                    id: id)
+                self.projects.append(project)
+                completion(project)
+            } else {
+                let errorMessage = "Проект с таким id уже существует"
+                error(AppError(message: errorMessage))
+            }
         })
     }
     
@@ -144,15 +129,20 @@ class Stub: Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func createTask(_ task: Task, completion: @escaping (Task) -> Void, error: @escaping (Error) -> (Void)) {
+    func createTask(_ task: EditTaskModel, completion: @escaping (Task) -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
             let id = UUID()
-            if self.tasks.contains(where: {$0.id == id}) == false {
-                let task = Task(name: task.name, project: task.project,
-                                projectId: task.projectId, timeToComplete: task.timeToComplete,
-                                startDate: task.startDate, endDate: task.endDate,
-                                status: task.status, employeeName: task.employeeName,
-                                employeeId: task.employeeId, id: id)
+            if self.tasks.contains(where: { $0.id == id }) == false {
+                let task = Task(
+                    name: task.name,
+                    projectId: task.projectId,
+                    timeToComplete: task.timeToComplete,
+                    startDate: task.startDate,
+                    endDate: task.endDate,
+                    status: task.status,
+                    employeeId: task.employeeId,
+                    id: id
+                )
                 self.tasks.append(task)
                 completion(task)
             } else {
@@ -170,22 +160,23 @@ class Stub: Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func createEmployee(_ employee: Employee, completion: @escaping (Employee) -> Void, error: @escaping (Error) -> (Void)) {
+    func createEmployee(_ employee: EditEmployeeModel, completion: @escaping (Employee) -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
             let id = UUID()
-            if self.employees.contains(where: {$0.fullName == employee.fullName}) == false {
-                if self.employees.contains(where: {$0.id == id}) == false {
-                    let employee = Employee(surName: employee.surName, name: employee.name,
-                                            middleName: employee.middleName, position: employee.position, id: id)
-                    self.employees.append(employee)
-                    completion(employee)
-                } else {
-                    let errorMessage = "Сотрудник с таким id уже существует"
-                    error(AppError(message: errorMessage))
-                }} else {
-                    let errorMessage = "Сотрудник с таким ФИО уже существует"
-                    error(AppError(message: errorMessage))
-                }
+            if self.employees.contains(where: { $0.id == id }) == false {
+                let employee = Employee(
+                    surName: employee.surName,
+                    name: employee.name,
+                    middleName: employee.middleName,
+                    position: employee.position,
+                    id: id
+                )
+                self.employees.append(employee)
+                completion(employee)
+            } else {
+                let errorMessage = "Сотрудник с таким id уже существует"
+                error(AppError(message: errorMessage))
+            }
         })
     }
     
@@ -193,58 +184,57 @@ class Stub: Server {
      Редактировать проект
      
      - parameters:
-        - project: Проект, который необходимо отредактировать
-        - id: Идентификатор проекта, который необходимо отредактировать
+        - editedProject: Проект, который необходимо отредактировать
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func editProject(_ project: Project, id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void)) {
+    func editProject(_ editedProject: Project, completion: @escaping () -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            if let editProject = self.projects.first(where: {$0.id == id}) {
-                editProject.name = project.name
-                editProject.description = project.description
-                editProject.tasks = project.tasks
-                self.editProjectInTask(project: editProject)
-                completion(true)
-            } else {
+            guard let projectData = self.projects.enumerated().first(where: { $0.element.id == editedProject.id }) else {
                 let errorMessage = "Выбранный проект не существует"
                 error(AppError(message: errorMessage))
+                return
             }
+            let projectIndex = projectData.offset
+            let projectToInsert = Project(
+                name: editedProject.name,
+                description: editedProject.description,
+                id: editedProject.id)
+            self.projects.remove(at: projectIndex)
+            self.projects.insert(projectToInsert, at: projectIndex)
+            completion()
         })
     }
-    
-    private func editProjectInTask(project: Project) {
-        self.tasks.forEach({ if $0.projectId == project.id {
-            $0.project = project.name
-        }})
-    }
-    
+
     /**
      Редактировать задачу
      
      - parameters:
-        - task: Задача, которую необходимо отредактировать
-        - id: Идентификатор задачи, которую необходимо отредактировать
+        - editedTask: Задача, которую необходимо отредактировать
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func editTask(_ task: Task, id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void)) {
+    func editTask(_ editedTask: Task, completion: @escaping () -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            if let editTask = self.tasks.first(where: {$0.id == id}) {
-                editTask.name = task.name
-                editTask.project = task.project
-                editTask.timeToComplete = task.timeToComplete
-                editTask.startDate = task.startDate
-                editTask.endDate = task.endDate
-                editTask.status = task.status
-                editTask.employeeName = task.employeeName
-                editTask.employeeId = task.employeeId
-                editTask.projectId = task.projectId
-                completion(true)
-            } else {
+            guard let taskData = self.tasks.enumerated().first(where: { $0.element.id == editedTask.id }) else {
                 let errorMessage = "Выбранная задача не существует"
                 error(AppError(message: errorMessage))
+                return
             }
+            let taskIndex = taskData.offset
+            let taskToInsert = Task(
+                name: editedTask.name,
+                projectId: editedTask.projectId,
+                timeToComplete: editedTask.timeToComplete,
+                startDate: editedTask.startDate,
+                endDate: editedTask.endDate,
+                status: editedTask.status,
+                employeeId: editedTask.employeeId,
+                id: editedTask.id
+            )
+            self.tasks.remove(at: taskIndex)
+            self.tasks.insert(taskToInsert, at: taskIndex)
+            completion()
         })
     }
     
@@ -252,32 +242,29 @@ class Stub: Server {
      Редактировать сотрудника
      
      - parameters:
-        - employee: Сотрудник, которого необходимо отредактировать
-        - id: Идентификатор сотрудника, которого необходимо отредактировать
+        - editedEmployee: Сотрудник, которого необходимо отредактировать
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func editEmployee(_ employee: Employee, id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void)) {
+    func editEmployee(_ editedEmployee: Employee, completion: @escaping () -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            if let editEmployee = self.employees.first(where: { $0.id == id}) {
-                editEmployee.name = employee.name
-                editEmployee.surName = employee.surName
-                editEmployee.middleName = employee.middleName
-                editEmployee.position = employee.position
-                editEmployee.fullName = employee.fullName
-                self.editEmployeeInTask(employee: editEmployee)
-                completion(true)
-            } else {
+            guard let employeeData = self.employees.enumerated().first(where: { $0.element.id == editedEmployee.id }) else {
                 let errorMessage = "Выбранный сотрудник не существует"
                 error(AppError(message: errorMessage))
+                return
             }
+            let employeeIndex = employeeData.offset
+            let employeeToInsert = Employee(
+                surName: editedEmployee.surName,
+                name: editedEmployee.name,
+                middleName: editedEmployee.middleName,
+                position: editedEmployee.position,
+                id: editedEmployee.id
+            )
+            self.employees.remove(at: employeeIndex)
+            self.employees.insert(employeeToInsert, at: employeeIndex)
+            completion()
         })
-    }
-    
-    private func editEmployeeInTask(employee: Employee) {
-        self.tasks.forEach({ if $0.employeeId == employee.id {
-            $0.employeeName = employee.fullName
-        }})
     }
     
     /**
@@ -288,21 +275,17 @@ class Stub: Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func deleteProjectWith(id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void)) {
+    func deleteProjectWith(id: UUID, completion: @escaping () -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            if let project = self.projects.first(where: {$0.id == id}) {
-                self.projects.removeAll(where: {$0.id == project.id})
-                self.deleteProjectFromTask(id: id)
-                completion(true)
+            if let project = self.projects.first(where: { $0.id == id }) {
+                self.projects.removeAll(where: { $0.id == project.id })
+                self.deleteProjectTasks(projectId: id)
+                completion()
             } else {
                 let errorMessage = "Выбранный проект не существует"
                 error(AppError(message: errorMessage))
             }
         })
-    }
-    
-    private func deleteProjectFromTask(id: UUID) {
-        self.tasks.removeAll(where: {$0.projectId == id})
     }
     
     /**
@@ -313,11 +296,11 @@ class Stub: Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func deleteTaskWith(id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void)) {
+    func deleteTaskWith(id: UUID, completion: @escaping () -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            if let task = self.tasks.first(where: {$0.id == id}) {
-                self.tasks.removeAll(where: { $0.id == task.id})
-                completion(true)
+            if let task = self.tasks.first(where: { $0.id == id }) {
+                self.tasks.removeAll(where: { $0.id == task.id })
+                completion()
             } else {
                 let errorMessage = "Выбранная задача не существует"
                 error(AppError(message: errorMessage))
@@ -333,12 +316,12 @@ class Stub: Server {
         - completion: Обработка ответа сервера
         - error: Обработка ошибочной ситуации
      */
-    func deleteEmployeeWith(id: UUID, completion: @escaping (Bool) -> Void, error: @escaping (Error) -> (Void)) {
+    func deleteEmployeeWith(id: UUID, completion: @escaping () -> Void, error: @escaping (Error) -> (Void)) {
         delay(completion: {
-            if let employee = self.employees.first(where: {$0.id == id}) {
-                self.employees.removeAll(where: { $0.id == employee.id})
-                self.deleteEmoloyeeFromTask(id: id)
-                completion(true)
+            if let employee = self.employees.first(where: { $0.id == id }) {
+                self.employees.removeAll(where: { $0.id == employee.id })
+                self.deleteEmoloyeeFromTask(taskId: id)
+                completion()
             } else {
                 let errorMessage = "Выбранный сотрудник не существует"
                 error(AppError(message: errorMessage))
@@ -346,10 +329,67 @@ class Stub: Server {
         })
     }
     
-    private func deleteEmoloyeeFromTask(id: UUID) {
-        self.tasks.forEach({ if $0.employeeId == id {
-            $0.employeeName = nil
-            $0.employeeId = nil
-        }})
+    private func editProjectInTask(project: Project) {
+        let filteredTasks = tasks.enumerated().filter({ $0.element.projectId == project.id })
+        filteredTasks.forEach { taskData in
+            let task = taskData.element
+            let taskIndex = taskData.offset
+            let taskToInsert = Task(
+                name: task.name,
+                projectId: project.id,
+                timeToComplete: task.timeToComplete,
+                startDate: task.startDate,
+                endDate: task.endDate,
+                status: task.status,
+                employeeId: task.employeeId,
+                id: task.id
+            )
+            tasks.remove(at: taskIndex)
+            tasks.insert(taskToInsert, at: taskIndex)
+        }
+    }
+    
+    private func deleteProjectTasks(projectId: UUID) {
+        self.tasks.removeAll(where: { $0.projectId == projectId })
+    }
+    
+    private func editEmployeeInTask(employee: Employee) {
+        let filteredTasks = tasks.enumerated().filter({ $0.element.employeeId == employee.id })
+        filteredTasks.forEach { taskData in
+            let task = taskData.element
+            let taskIndex = taskData.offset
+            let taskToInsert = Task(
+                name: task.name,
+                projectId: task.projectId,
+                timeToComplete: task.timeToComplete,
+                startDate: task.startDate,
+                endDate: task.endDate,
+                status: task.status,
+                employeeId: task.employeeId,
+                id: task.id
+            )
+            tasks.remove(at: taskIndex)
+            tasks.insert(taskToInsert, at: taskIndex)
+        }
+    }
+    
+    private func deleteEmoloyeeFromTask(taskId: UUID) {
+        guard let taskData = tasks.enumerated().first(where: { $0.element.id == taskId }) else {
+            return
+        }
+        let task = taskData.element
+        let taskIndex = taskData.offset
+        let taskToInsert = Task(
+            name: task.name,
+            projectId: task.projectId,
+            timeToComplete: task.timeToComplete,
+            startDate: task.startDate,
+            endDate: task.endDate,
+            status: task.status,
+            employeeId: nil,
+            id: taskId
+        )
+        tasks.remove(at: taskIndex)
+        tasks.insert(taskToInsert, at: taskIndex)
     }
 }

@@ -6,11 +6,18 @@ import Foundation
 protocol EditProjectViewControllerDelegate: AnyObject {
     
     /**
-     Сохранить/изменить проект
+    Изменить проект
      
      - parameters:
-        - model: Проект, который необходимо сохранить/изменить
-        - isOpenFromAddButton: Проверка - был ли произведен переход с помощью кнопки "Добавить"
+        - model: Проект, который необходимо изменить
      */
-    func saveProject(model: Project, isOpenFromAddButton: Bool)
+    func editAndSaveProject(model: Project)
+    
+    /**
+     Создать проект
+     
+     - parameters:
+        - model: Проект, который необходимо создать
+     */
+    func createProject(model: EditProjectModel)
 }

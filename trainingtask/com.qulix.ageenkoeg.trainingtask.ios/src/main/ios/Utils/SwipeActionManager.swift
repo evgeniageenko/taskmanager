@@ -1,24 +1,25 @@
 import UIKit
 
 /**
-Данный класс реализовывает методы "Изменения" и "Удаления" объектов по свайпу
-*/
+ Данный класс реализовывает методы "Изменения" и "Удаления" объектов по свайпу
+ */
 class SwipeActionManager {
     
     /**
-    Изменить объект
-    
-    - parameters:
-     - indexPath: Индекс строки
-     - completion: Реализация изменения
+     Изменить объект
      
-    - returns: Действие "Изменить", когда пользователь проводит пальцем по строке таблицы
-    */
+     - parameters:
+        - rowIndexPathAt: Индекс строки
+        - completion: Реализация изменения
+     
+     - returns: Действие "Изменить", когда пользователь проводит пальцем по строке таблицы
+     */
     func edit(rowIndexPathAt indexPath: IndexPath, completion: @escaping () -> Void) -> UIContextualAction {
         let title = "Изменить"
         let editAction = UIContextualAction(style: .normal, title: title) { _, _, _ in
             completion()
         }
+        
         return editAction
     }
     
@@ -26,7 +27,7 @@ class SwipeActionManager {
      Удалить объект
      
      - parameters:
-        - indexPath: Индекс строки
+        - rowIndexPathAt: Индекс строки
         - completion: Реализация удаления
      
      - returns: Действие "Удалить", когда пользователь проводит пальцем по строке таблицы
@@ -36,6 +37,7 @@ class SwipeActionManager {
         let deleteAction = UIContextualAction(style: .destructive, title: title) { _, _, _ in
             completion()
         }
+        
         return deleteAction
     }
 }

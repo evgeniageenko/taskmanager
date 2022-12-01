@@ -14,26 +14,24 @@ class DateService: DateFormatter {
         fatalError("init(coder:) has not been implemented")
     }
     
-    /**
-     Проверить валидность даты
-     
-     - parameters:
-        - dateString: Дата, которую необходимо проверить
-     
-     - returns: Результат проверки (валидно или нет)
-     */
-    func checkForValidity(_ dateString: String) -> Bool {
-        let components = dateString.components(separatedBy: ["-"])
-        let yearInterval = (2022...)
-        guard
-            components.count == 3,
-            components[0].count == 4,
-            components[1].count == 2,
-            components[2].count == 2,
-            let date = self.date(from: dateString), let year = calendar.dateComponents([.year], from: date).year
-        else { return false }
+    override func date(from string: String) -> Date? {
+        guard string.count == format.count else {
+            return nil
+        }
         
-        return yearInterval.contains(year)
+        let dateParts = string.components(separatedBy: "-")
+        
+        guard dateParts.count == 3 else {
+            return nil
+        }
+        
+        guard dateParts[0].count == 4,
+              dateParts[1].count == 2,
+              dateParts[2].count == 2 else {
+            return nil
+        }
+        
+        return super.date(from: string)
     }
     
     /**

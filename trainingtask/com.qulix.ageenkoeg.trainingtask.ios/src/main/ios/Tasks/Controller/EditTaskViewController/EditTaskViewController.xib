@@ -19,8 +19,6 @@
                 <outlet property="taskPerformerTextField" destination="Mkm-Gl-GSL" id="gUO-xN-ptE"/>
                 <outlet property="timeToCompleteTaskTextField" destination="2N3-Xx-XFQ" id="REu-5d-9TH"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
-                <outletCollection property="inputViews" destination="4Qs-3a-5Ag" collectionClass="NSMutableArray" id="ylj-LR-LyW"/>
-                <outletCollection property="inputViews" destination="98G-xn-b50" collectionClass="NSMutableArray" id="rXK-Bm-3Kx"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -29,81 +27,96 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Наименование" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n9k-Rc-8mX">
-                    <rect key="frame" x="20" y="0.0" width="374" height="21"/>
+                    <rect key="frame" x="20" y="48" width="374" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2Vj-63-cfZ">
-                    <rect key="frame" x="20" y="29" width="374" height="34"/>
+                    <rect key="frame" x="20" y="77" width="374" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Наименование проекта" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hTk-ge-Mlq">
-                    <rect key="frame" x="20" y="71" width="374" height="21"/>
+                    <rect key="frame" x="20" y="119" width="374" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4Qs-3a-5Ag">
-                    <rect key="frame" x="20" y="242" width="374" height="34"/>
+                    <rect key="frame" x="20" y="290" width="374" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="MjZ-E7-cho" appends="YES" id="SIJ-zw-259"/>
+                    </connections>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Работа" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Mc-Dv-yx3">
-                    <rect key="frame" x="20" y="142" width="374" height="21"/>
+                    <rect key="frame" x="20" y="190" width="374" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2N3-Xx-XFQ">
-                    <rect key="frame" x="20" y="171" width="374" height="34"/>
+                    <rect key="frame" x="20" y="219" width="374" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Дата начала" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92R-Ai-IUq">
-                    <rect key="frame" x="20" y="213" width="374" height="21"/>
+                    <rect key="frame" x="20" y="261" width="374" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XeB-3z-bH2">
-                    <rect key="frame" x="20" y="384" width="374" height="34"/>
+                    <rect key="frame" x="20" y="432" width="374" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="J9Z-W3-iFe" appends="YES" id="bpC-0C-GYt"/>
+                    </connections>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Дата окончания" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2tj-un-TqQ">
-                    <rect key="frame" x="20" y="284" width="374" height="21"/>
+                    <rect key="frame" x="20" y="332" width="374" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="98G-xn-b50">
-                    <rect key="frame" x="20" y="313" width="374" height="34"/>
+                    <rect key="frame" x="20" y="361" width="374" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="ajW-UI-DUA" appends="YES" id="8jb-Hp-RbC"/>
+                    </connections>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Статус" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RTb-ji-NKO">
-                    <rect key="frame" x="20" y="355" width="374" height="21"/>
+                    <rect key="frame" x="20" y="403" width="374" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Mkm-Gl-GSL">
-                    <rect key="frame" x="20" y="455" width="374" height="34"/>
+                    <rect key="frame" x="20" y="503" width="374" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="LEJ-AQ-S9F" appends="YES" id="8wz-5w-fri"/>
+                    </connections>
                 </textField>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Исполнитель" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZOw-Aq-yzF">
-                    <rect key="frame" x="20" y="426" width="374" height="21"/>
+                    <rect key="frame" x="20" y="474" width="374" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="elm-t8-y5n">
-                    <rect key="frame" x="20" y="100" width="374" height="34"/>
+                    <rect key="frame" x="20" y="148" width="374" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="4LY-8L-cpg" appends="YES" id="dcQ-8j-O70"/>
+                    </connections>
                 </textField>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d84-A2-jBX">
                     <rect key="frame" x="136" y="761" width="140" height="45"/>
@@ -178,6 +191,31 @@
         <tapGestureRecognizer id="HP8-OX-84Q">
             <connections>
                 <action selector="tap:" destination="-1" id="GKT-26-Thf"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="4LY-8L-cpg">
+            <connections>
+                <action selector="showProjectPicker" destination="-1" id="d3s-7b-gRP"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="J9Z-W3-iFe">
+            <connections>
+                <action selector="showStatusPicker" destination="-1" id="7u5-ug-kJs"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="LEJ-AQ-S9F">
+            <connections>
+                <action selector="showEmployeePicker" destination="-1" id="1VW-34-U13"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="MjZ-E7-cho">
+            <connections>
+                <action selector="showStartDatePicker" destination="-1" id="xBF-L2-ES7"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="ajW-UI-DUA">
+            <connections>
+                <action selector="showEndDatePicker" destination="-1" id="ujY-Ht-HxG"/>
             </connections>
         </tapGestureRecognizer>
     </objects>

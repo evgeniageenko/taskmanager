@@ -1,41 +1,41 @@
 import Foundation
 
 /**
- Класс модели "Сотрудник"
+ Структура модели "Сотрудник"
  */
-class Employee {
+struct Employee {
     
     /**
      Фамилия сотрудника
      */
-    var surName: String
+    let surName: String
     
     /**
      Имя сотрудника
      */
-    var name: String
+    let name: String
     
     /**
      Отчество сотрудника
      */
-    var middleName: String
+    let middleName: String
     
     /**
      Должность сотрудника
      */
-    var position: String
+    let position: String
     
     /**
      id сотрудника
      
-     Свойство id уникально для каждого сотрудника. Работа с сотрудником (удаление, редактирование) производится используя id.
+     Свойство id уникально для каждого сотрудника.
      */
-    let id: UUID?
+    let id: UUID
     
     /**
-     Фамилия Имя Отчество сотрудника
+     Фамилия имя отчество сотрудника
      */
-    var fullName: String
+    let fullName: String
     
     /**
      Создает нового сотрудника
@@ -45,10 +45,10 @@ class Employee {
         - name: Имя
         - middleName: Отчество
         - position: Должность
-        - id: Идентификатор сотрудника
+        - id: id сотрудника
         - fullName: Фамилия имя отчество сотрудника
      */
-    init(surName: String, name: String, middleName: String, position: String, id: UUID?) {
+    init(surName: String, name: String, middleName: String, position: String, id: UUID) {
         self.surName = surName
         self.name = name
         self.middleName = middleName

@@ -3,22 +3,22 @@ import Foundation
 /**
  Класс модели "Настройки"
  */
-class Settings {
+struct Settings: Codable {
     
     /**
      url
      */
-    var url: String
+    let url: URL
     
     /**
      Максимальное количество записей в списках
      */
-    var maxNumOfEntries: String
+    let maxNumOfEntries: Int
     
     /**
      Количество дней по умолчанию между начальной и конечной датами в задаче
      */
-    var numOfDaysBetweenDates: String
+    let numOfDaysBetweenDates: Int
     
     /**
      Создает объект "Настройки"
@@ -28,7 +28,7 @@ class Settings {
         - maxNumOfEntries: Максимальное количество записей в списках
         - numOfDaysBetweenDates: Количество дней по умолчанию между начальной и конечной датами в задаче
      */
-    init(url: String, maxNumOfEntries: String, numOfDaysBetweenDates: String) {
+    init(url: URL, maxNumOfEntries: Int, numOfDaysBetweenDates: Int) {
         self.url = url
         self.maxNumOfEntries = maxNumOfEntries
         self.numOfDaysBetweenDates = numOfDaysBetweenDates

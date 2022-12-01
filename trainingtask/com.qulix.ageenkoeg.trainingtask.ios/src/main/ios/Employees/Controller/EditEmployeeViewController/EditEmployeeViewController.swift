@@ -9,7 +9,7 @@ class EditEmployeeViewController: UIViewController {
     @IBOutlet private weak var middleNameTextField: UITextField!
     @IBOutlet private weak var positionTextField: UITextField!
     
-    private let employee: Employee?
+    private let mode: EditEmployeeMode
     
     /**
      Делегат интерфейса EditEmployeeViewControllerDelegate
@@ -20,10 +20,10 @@ class EditEmployeeViewController: UIViewController {
      Создает экран "Редактирование сотрудника"
      
      - parameters:
-        - employee: Сотрудник (если переход был произведен с помощью кнопки "Изменить")
+        - mode: Перечисление возможных действий на экране
      */
-    init(employee: Employee?) {
-        self.employee = employee
+    init(mode: EditEmployeeMode) {
+        self.mode = mode
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,7 +34,7 @@ class EditEmployeeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTitle()
-        bind(employee)
+        bind(by: mode)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,49 +47,56 @@ class EditEmployeeViewController: UIViewController {
         self.title = title
     }
     
-    private func bind(_ model: Employee?) {
-        surNameTextField.text = model?.surName
-        nameTextField.text = model?.name
-        middleNameTextField.text = model?.middleName
-        positionTextField.text = model?.position
-        
+    private func bind(by mode: EditEmployeeMode) {
+        switch mode {
+        case .create:
+            break
+        case .edit(let employee):
+            surNameTextField.text = employee.name
+            nameTextField.text = employee.name
+            middleNameTextField.text = employee.middleName
+            positionTextField.text = employee.position
+        }
     }
     
-    private func unbind() throws -> Employee {
-        guard let surName = surNameTextField.text, !surName.isEmpty else {
-            let error = "Введите фамилию"
-            throw AppError(message: error)
+    private func unbind() throws -> EditEmployeeModel {
+        let validation = EditEmployeeValidation()
+        
+        let validationResult = validation.validateAndReturnResult(
+            surName: surNameTextField.text,
+            name: nameTextField.text,
+            middleName: middleNameTextField.text,
+            position: positionTextField.text
+        )
+        
+        switch validationResult {
+        case .success(let employee):
+            surNameTextField.text = nil
+            nameTextField.text = nil
+            middleNameTextField.text = nil
+            positionTextField.text = nil
+            return employee
+        case .error(let error):
+            throw error
         }
-        
-        guard let name = nameTextField.text, !name.isEmpty else {
-            let error = "Введите имя"
-            throw AppError(message: error)
-        }
-        
-        guard let middleName = middleNameTextField.text, !middleName.isEmpty else {
-            let error = "Введите отчество"
-            throw AppError(message: error)
-        }
-        
-        guard let position = positionTextField.text, !position.isEmpty else {
-            let error = "Укажите должность"
-            throw AppError(message: error)
-        }
-        
-        surNameTextField.text = nil
-        nameTextField.text = nil
-        middleNameTextField.text = nil
-        positionTextField.text = nil
-        
-        let employee = Employee(surName: surName, name: name, middleName: middleName, position: position, id: employee?.id)
-        
-        return employee
     }
     
     @IBAction private func saveButtonAction(_ sender: Any) {
         do {
             let model = try unbind()
-            delegate?.saveEmployee(model: model, isOpenFromAddButton: employee == nil)
+            switch mode {
+            case .create:
+                delegate?.createEmployee(model: model)
+            case .edit(let employee):
+                let employee = Employee(
+                    surName: model.surName,
+                    name: model.name,
+                    middleName: model.middleName,
+                    position: model.position,
+                    id: employee.id
+                )
+                delegate?.editAndSaveEmployee(model: employee)
+            }
             self.navigationController?.popViewController(animated: true)
         } catch let error {
             showAlertWith(error.localizedDescription)

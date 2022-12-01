@@ -9,12 +9,11 @@ class TasksViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
-    private var tasks: [Task] = []
-    private var isOpenFromProjectVC = false
+    private var tasks: [TaskDetailModel] = []
     private let refreshControl = UIRefreshControl()
     private let swipeManager = SwipeActionManager()
     private let selectedProject: Project?
-    private let settings: SettingsServise
+    private let settingsService: SettingsServise
     private let server: Server
     
     /**
@@ -22,12 +21,12 @@ class TasksViewController: UIViewController, UITableViewDelegate, UITableViewDat
      
      - parameters:
         - server: Реализация интерфейса сервера
-        - settings: Настройки приложения
-        - selectedProject: Выбранный проект на экране "Проекты"
+        - settingsService: Настройки приложения
+        - selectedProject: Выбранный проект (если переход был осуществлен с экрана "Проекты")
      */
-    init(server: Server, settings: SettingsServise, selectedProject: Project?) {
+    init(server: Server, settingsService: SettingsServise, selectedProject: Project?) {
         self.server = server
-        self.settings = settings
+        self.settingsService = settingsService
         self.selectedProject = selectedProject
         super.init(nibName: nil, bundle: nil)
     }
@@ -42,7 +41,6 @@ class TasksViewController: UIViewController, UITableViewDelegate, UITableViewDat
         setUpAddButton()
         setUpTitle()
         loadData()
-        activityIndicator.hidesWhenStopped = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -73,85 +71,49 @@ class TasksViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableView.addSubview(refreshControl)
     }
     
-    private func loadData() {
-        if selectedProject != nil {
-            getSelectedProjectTasks()
-        } else {
-            getTasks()
-        }
+    private func setUpAddButton() {
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonAction))
+        navigationItem.rightBarButtonItem = addButton
     }
     
-    private func getSelectedProjectTasks() {
-        if let id = selectedProject?.id {
-            activityIndicator.startAnimating()
-            let limit = settings.getLimit()
-            server.getProjectTasksBy(id: id, limit: limit) { [weak self] tasks in
-                guard let self = self else { return }
-                self.tasks = tasks
-                DispatchQueue.main.async { [weak self] in
-                    self?.tableView.reloadData()
-                }
-                self.activityIndicator.stopAnimating()
-            } error: { [weak self] error in
-                self?.resolveError(error)
+    private func loadData() {
+        guard let project = selectedProject else {
+            return getTasks()
+        }
+        getTaskFor(project: project)
+    }
+    
+    private func getTaskFor(project: Project) {
+        let id = project.id
+        activityIndicator.startAnimating()
+        let limit = settingsService.getSettings().maxNumOfEntries
+        server.getProjectTasksBy(id: id) { [weak self] tasks in
+            guard let self = self else {
+                return
             }
+            
+            self.tasks = Array(tasks[0..<min(limit, tasks.count)])
+            self.tableView.reloadData()
+            self.activityIndicator.stopAnimating()
+        } error: { [weak self] error in
+            self?.resolveError(error)
         }
     }
     
     private func getTasks() {
         activityIndicator.startAnimating()
-        let limit = settings.getLimit()
-        server.getTasksWith(limit: limit, completion: { [weak self] tasks in
-            guard let self = self else { return }
-            self.tasks = tasks
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.reloadData()
+        let limit = settingsService.getSettings().maxNumOfEntries
+        server.getTasks(completion: { [weak self] tasks in
+            guard let self = self else {
+                return
             }
+            
+            self.tasks = Array(tasks[0..<min(limit, tasks.count)])
+            self.tableView.reloadData()
             self.activityIndicator.stopAnimating()
         }, error: { [weak self] error in
             self?.resolveError(error)
         })
-    }
-    
-    /**
-     Сохранить/изменить задачу
-     
-     - parameters:
-        - model: Задача, которую необходимо сохранить/изменить
-        - isOpenFromAddButton: Проверка - был ли произведен переход с помощью кнопки "Добавить"
-     */
-    func saveTask(model: Task, isOpenFromAddButton: Bool) {
-        if isOpenFromAddButton {
-            activityIndicator.startAnimating()
-            server.createTask(Task(name: model.name,
-                                   project: model.project,
-                                   projectId: model.projectId,
-                                   timeToComplete: model.timeToComplete,
-                                   startDate: model.startDate,
-                                   endDate: model.endDate,
-                                   status: model.status,
-                                   employeeName: model.employeeName,
-                                   employeeId: model.employeeId,
-                                   id: model.id)) { [weak self] task in
-                self?.loadData()
-                self?.activityIndicator.stopAnimating()
-            } error: { [weak self] error in
-                self?.resolveError(error)
-            }
-        } else {
-            activityIndicator.startAnimating()
-            if let id = model.id {
-                server.editTask(model, id: id) { [weak self] success in
-                    self?.loadData()
-                    self?.activityIndicator.stopAnimating()
-                    DispatchQueue.main.async { [weak self] in
-                        self?.tableView.reloadData()
-                    }
-                } error: { [weak self] error in
-                    self?.resolveError(error)
-                }
-            }
-        }
     }
     
     private func showAlertWith(_ message: String) {
@@ -172,36 +134,80 @@ class TasksViewController: UIViewController, UITableViewDelegate, UITableViewDat
         refreshControl.endRefreshing()
     }
     
-    private func setUpAddButton() {
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonAction))
-        navigationItem.rightBarButtonItem = addButton
-    }
-    
     @objc private func addButtonAction(_ sender: Any) {
-        let controller = EditTaskViewController(selectedTask: nil,
-                                                server: server,
-                                                settings: settings,
-                                                selectedProject: selectedProject)
+        let controller = EditTaskViewController(
+            mode: .create(project: selectedProject, canEditProject:  checkIsCanEditProject()),
+            server: server,
+            settingsService: settingsService
+        )
         controller.delegate = self
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
+    private func checkIsCanEditProject() -> Bool {
+        guard selectedProject != nil else {
+            return false
+        }
+        return true
+    }
+    
+    /**
+     Изменить задачу
+     
+     - parameters:
+        - model: Задача, которую необходимо изменить
+     */
+    func editAndSaveTask(model: Task) {
+        activityIndicator.startAnimating()
+        server.editTask(model) { [weak self] in
+            self?.loadData()
+            self?.activityIndicator.stopAnimating()
+            self?.tableView.reloadData()
+        } error: { [weak self] error in
+            self?.resolveError(error)
+        }
+    }
+    
+    /**
+     Создать задачу
+     
+     - parameters:
+        - model: Задача, которую необходимо создать
+     */
+    func createTask(model: EditTaskModel) {
+        activityIndicator.startAnimating()
+        server.createTask(model) { [weak self] task in
+            self?.loadData()
+            self?.activityIndicator.stopAnimating()
+        } error: { [weak self] error in
+            self?.resolveError(error)
+        }
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let edit = swipeManager.edit(rowIndexPathAt: indexPath) { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
+            
             let task = self.tasks[indexPath.row]
-            let controller = EditTaskViewController(selectedTask: task,
-                                                    server: self.server,
-                                                    settings: self.settings,
-                                                    selectedProject: self.selectedProject)
+            let controller = EditTaskViewController(
+                mode: .edit(task: task),
+                server: self.server,
+                settingsService: self.settingsService
+            )
             controller.delegate = self
             self.navigationController?.pushViewController(controller, animated: true)
             self.tableView.reloadData()
         }
         
         let delete = swipeManager.delete(rowIndexPathAt: indexPath) { [weak self] in
-            guard let self = self, let id = self.tasks[indexPath.row].id else { return }
-            self.server.deleteTaskWith(id: id) { [weak self] success in
+            guard let self = self else {
+                return
+            }
+            
+            let id = self.tasks[indexPath.row].task.id
+            self.server.deleteTaskWith(id: id) { [weak self] in
                 self?.getTasks()
             } error: { [weak self] error in
                 self?.resolveError(error)
@@ -218,20 +224,29 @@ class TasksViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier = TaskCell().getIdentifier()
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! TaskCell
-        let name = tasks[indexPath.row].name
-        let project = tasks[indexPath.row].project
-        let status = tasks[indexPath.row].status
-        if selectedProject != nil {
-            isOpenFromProjectVC = true
-        } else {
-            isOpenFromProjectVC = false
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? TaskCell else {
+            fatalError("У таблицы не зарегистрирована ячейка TaskCell")
         }
-        cell.setUpTaskWith(TaskCellModel(name: name,
-                                         projectName: project,
-                                         status: status,
-                                         isOpenFromProjectVC: isOpenFromProjectVC))
+        
+        let name = tasks[indexPath.row].task.name
+        let project = tasks[indexPath.row].project.name
+        let status = tasks[indexPath.row].task.status
+        cell.bind(model: TaskCellModel(
+            name: name,
+            projectName: project,
+            status: status,
+            isOpenFromProjectVC: checkIsCanEditProject())
+        )
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        switch cell {
+        case let taskCell as TaskCell:
+            taskCell.unbind()
+        default:
+            break
+        }
     }
 }
 

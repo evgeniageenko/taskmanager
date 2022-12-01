@@ -21,7 +21,7 @@ struct TaskCellModel {
     let status: TaskStatus
     
     /**
-     Проверка - был ли произведен переход на экран с экрана Проектов
+     Проверка - был ли произведен переход на экран с экрана "Список проектов"
      */
     let isOpenFromProjectVC: Bool
 }

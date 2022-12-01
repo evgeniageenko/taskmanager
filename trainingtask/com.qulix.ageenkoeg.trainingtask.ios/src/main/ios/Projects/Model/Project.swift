@@ -1,31 +1,26 @@
 import Foundation
 
 /**
- Класс модели "Проекта"
+ Структура модели "Проекта"
  */
-class Project {
+struct Project {
     
     /**
      Название проекта
      */
-    var name: String
+    let name: String
     
     /**
      Описание проекта
      */
-    var description: String
+    let description: String
     
     /**
-     Массив задач, которые относятся к проекту
-     */
-    var tasks: [Task]?
-    
-    /**
-     Идентификатор проекта
+     id проекта
      
-     Свойство id уникально для каждого проекта. Работа с проектом (удаление, редактирвоание) производится используя id.
+     Свойство id уникально для каждого проекта.
      */
-    let id: UUID?
+    let id: UUID
     
     /**
      Создает новый проект
@@ -33,13 +28,11 @@ class Project {
      - parameters:
         - name: Название проекта
         - description: Описание проекта
-        - tasks: Массив задач, которые относятся к проекту
-        - id: Идентификатор проекта
+        - id: id проекта
      */
-    init(name: String, description: String, tasks: [Task]?, id: UUID?) {
+    init(name: String, description: String, id: UUID) {
         self.name = name
         self.description = description
-        self.tasks = tasks
         self.id = id
     }
 }

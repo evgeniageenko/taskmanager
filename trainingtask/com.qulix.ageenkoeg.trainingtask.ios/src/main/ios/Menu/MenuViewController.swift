@@ -7,19 +7,18 @@ import UIKit
  */
 class MenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private let menuTableView = UITableView(frame: .zero, style: .plain)
-    
-    private let settings: SettingsServise
+    private let settingsService: SettingsServise
     private let server: Server
     
     /**
      Создает экран "Меню"
      
      - parameters:
-        - settings: Настройки приложения
+        - settingsService: Настройки приложения
         - server: Реализация интерфейса сервера
      */
-    init(settings: SettingsServise, server: Server) {
-        self.settings = settings
+    init(settingsService: SettingsServise, server: Server) {
+        self.settingsService = settingsService
         self.server = server
         super.init(nibName: nil, bundle: nil)
     }
@@ -93,20 +92,28 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.deselectRow(at: indexPath, animated: true)
         switch MenuItem.getItem(indexPath.row) {
         case .projects:
-            let controller = ProjectsViewController(server: server,
-                                                    settings: settings)
+            let controller = ProjectsViewController(
+                server: server,
+                settingsService: settingsService
+            )
             self.navigationController?.pushViewController(controller, animated: true)
         case .tasks:
-            let controller = TasksViewController(server: server,
-                                                 settings: settings,
-                                                 selectedProject: nil)
+            let controller = TasksViewController(
+                server: server,
+                settingsService: settingsService,
+                selectedProject: nil
+            )
             self.navigationController?.pushViewController(controller, animated: true)
         case .emoloyees:
-            let controller = EmployeeViewController(server: server,
-                                                    settings: settings)
+            let controller = EmployeeViewController(
+                server: server,
+                settingsService: settingsService
+            )
             self.navigationController?.pushViewController(controller, animated: true)
         case .settings:
-            let controller = SettingsViewController(settings: settings)
+            let controller = SettingsViewController(
+                settingsService: settingsService
+            )
             self.navigationController?.pushViewController(controller, animated: true)
         }
     }

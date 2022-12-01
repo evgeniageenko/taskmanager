@@ -5,8 +5,8 @@
 	<key>url</key>
 	<string>https://qulix.com</string>
 	<key>maxNumOfEntries</key>
-	<string>10</string>
+	<integer>10</integer>
 	<key>numOfDaysBetweenDates</key>
-	<string>0</string>
+	<integer>0</integer>
 </dict>
 </plist>

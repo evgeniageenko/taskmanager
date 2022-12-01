@@ -1,7 +1,7 @@
 import Foundation
 
 /**
- Структура ошибки
+ Структура ошибки работы приложения
  */
 struct AppError: Error, LocalizedError {
     
